@@ -18,22 +18,23 @@ public class Corona extends InputAdapter {
 
     Texture img;
     Rectangle rectangle;
-    Vector2 posision;
+    Vector2 posision,velocity;
     ShapeRenderer renderer;
     SpriteBatch batch;
     Viewport viewport;
 
-    public Corona(Viewport viewport) {
+    public Corona(Viewport viewport, Vector2 position) {
         this.viewport = viewport;
-        img = new Texture("corona.png");
-        posision = new Vector2(0, 0);
+        img = new Texture("coronanuevo.png");
+        posision = position;
         rectangle = new Rectangle(posision.x, posision.y, img.getWidth(), img.getHeight());
         batch = new SpriteBatch();
         renderer = new ShapeRenderer();
+        velocity = new Vector2();
     }
 
     public void render(float delta) {
-        handleInput(delta);
+        //handleInput(delta);
         batch.setProjectionMatrix(viewport.getCamera().combined);
         renderer.setProjectionMatrix(viewport.getCamera().combined);
         renderer.begin(ShapeRenderer.ShapeType.Line);
@@ -43,9 +44,12 @@ public class Corona extends InputAdapter {
         batch.begin();
         batch.draw(img,posision.x,posision.y);
         batch.end();
+        velocity.mulAdd(new Vector2(0,-50.0f), delta);
+        posision.mulAdd(velocity, delta);
+        rectangle.setPosition(posision);
     }
 
-    public void handleInput(float delta) {
+    private void handleInput(float delta) {
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
             posision.x += delta * 180;
             rectangle.x += delta * 180;
