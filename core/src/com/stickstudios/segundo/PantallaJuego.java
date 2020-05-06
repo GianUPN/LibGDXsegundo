@@ -9,9 +9,12 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+
+import java.util.Vector;
 
 public class PantallaJuego implements Screen {
 
@@ -19,7 +22,7 @@ public class PantallaJuego implements Screen {
     public static final float HEIGH = 360.0f;
 
     Game game;
-    BitmapFont font;
+    BitmapFont balas_text, tiempo_restante_text;
     Texture fondo;
     Medico medico;
     CoronaList coronaList;
@@ -27,6 +30,9 @@ public class PantallaJuego implements Screen {
     Viewport viewport;
     SpriteBatch batch;
     ShapeRenderer renderer;
+    Vector<Integer> cant_balas;
+    long startTime = 0;
+    int tiempo_restante;
 
     public PantallaJuego(Game game){
         this.game = game;
@@ -38,11 +44,18 @@ public class PantallaJuego implements Screen {
         viewport = new FitViewport(WIDTH,HEIGH);
         batch = new SpriteBatch();
         renderer = new ShapeRenderer();
-        font = new BitmapFont();
-        font.getData().setScale(2);
-        font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
-        coronaList = new CoronaList(viewport);
+        balas_text = new BitmapFont();
+        balas_text.getData().setScale(2);
+        balas_text.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        tiempo_restante_text = new BitmapFont();
+        tiempo_restante_text.getData().setScale(2);
+        tiempo_restante_text.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        cant_balas = new Vector<>();
+        cant_balas.add(30);
+        tiempo_restante = 60;
+        startTime = TimeUtils.millis();
         medico = new Medico(viewport);
+        coronaList = new CoronaList(viewport,cant_balas,medico);
         fondo = new Texture("fondo.PNG");
         Gdx.input.setInputProcessor(coronaList);
     }
@@ -59,14 +72,24 @@ public class PantallaJuego implements Screen {
         renderer.setProjectionMatrix(viewport.getCamera().combined);
         batch.setProjectionMatrix(viewport.getCamera().combined);
 
+        /** Textos */
         batch.begin();
         batch.draw(fondo,0,0);
-        font.draw(batch,"",100,40);
+        balas_text.draw(batch,"vacunas: " + cant_balas.get(0),20,30);
+        tiempo_restante_text.draw(batch,"Sobrevive: " + tiempo_restante,270,30);
         batch.end();
+        /** Contador de segundos */
+        if (TimeUtils.timeSinceMillis(startTime) > 1000) {
+            startTime = TimeUtils.millis();
+            tiempo_restante--;
+        }
 
         coronaList.update(delta);
         medico.render(delta);
-        //medico.collision(corona.rectangle);
+
+        if(!medico.isState()){ //REINICIAR
+            game.setScreen(new PantallaJuego(game));
+        }
     }
 
     @Override
@@ -92,9 +115,8 @@ public class PantallaJuego implements Screen {
     @Override
     public void dispose() {
         batch.dispose();
-        font.dispose();
+        balas_text.dispose();
         renderer.dispose();
-
         medico.dispose();
     }
 }

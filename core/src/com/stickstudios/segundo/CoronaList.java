@@ -1,20 +1,25 @@
 package com.stickstudios.segundo;
 
 import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.DelayedRemovalArray;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
+import java.util.Vector;
+
 public class CoronaList extends InputAdapter {
 
     DelayedRemovalArray<Corona> coronaList;
+    Vector<Integer> cant_balas;
     Viewport viewport;
+    Medico medico;
 
-    public CoronaList(Viewport viewport) {
+    public CoronaList(Viewport viewport, Vector<Integer> cant_balas, Medico medico) {
         this.viewport = viewport;
+        this.cant_balas = cant_balas;
+        this.medico = medico;
         init();
     }
 
@@ -34,6 +39,9 @@ public class CoronaList extends InputAdapter {
 
         for (Corona corona : coronaList) {
             corona.render(delta);
+            if(corona.getRectangle().overlaps(medico.getRectangle())){
+                medico.setState(false);
+            }
         }
 
         coronaList.begin();
@@ -48,10 +56,11 @@ public class CoronaList extends InputAdapter {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         Vector2 worldClick = viewport.unproject(new Vector2(screenX, screenY));
-        for (int i = 0; i < coronaList.size; i++) {
-            if(coronaList.get(i).rectangle.contains(worldClick.x,worldClick.y)){
+        for (int i = 0; i < coronaList.size && cant_balas.get(0)>0; i++) {
+            if(coronaList.get(i).getRectangle().contains(worldClick.x,worldClick.y)){
                 coronaList.removeIndex(i);
-                System.out.println("murioxd");
+                //System.out.println("murio");
+                cant_balas.set(0,cant_balas.get(0)-1);
             }
         }
 
