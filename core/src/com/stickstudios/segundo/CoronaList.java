@@ -24,11 +24,12 @@ public class CoronaList extends InputAdapter {
     }
 
     public void init() {
-        coronaList = new DelayedRemovalArray<Corona>(false, 100);
+        coronaList = new DelayedRemovalArray<Corona>(false, 200);
     }
 
-    public void update(float delta) {
-        if (MathUtils.random() < delta * 2f) {
+    public void update(float delta, float dificultad) {
+        float velocidad = 50f;
+        if (MathUtils.random() < delta * dificultad) {
             Vector2 position = new Vector2(
                     MathUtils.random() * (viewport.getWorldWidth()-30),
                     viewport.getWorldHeight()
@@ -38,7 +39,7 @@ public class CoronaList extends InputAdapter {
         }
 
         for (Corona corona : coronaList) {
-            corona.render(delta);
+            corona.render(delta, velocidad +(dificultad*6));
             if(corona.getRectangle().overlaps(medico.getRectangle())){
                 medico.setState(false);
             }

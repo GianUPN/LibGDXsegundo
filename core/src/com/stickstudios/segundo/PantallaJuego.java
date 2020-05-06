@@ -11,7 +11,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import java.util.Vector;
@@ -33,6 +32,7 @@ public class PantallaJuego implements Screen {
     Vector<Integer> cant_balas;
     long startTime = 0;
     int tiempo_restante;
+    float dificultad;
 
     public PantallaJuego(Game game){
         this.game = game;
@@ -57,6 +57,7 @@ public class PantallaJuego implements Screen {
         medico = new Medico(viewport);
         coronaList = new CoronaList(viewport,cant_balas,medico);
         fondo = new Texture("fondo.PNG");
+        dificultad = 2f;
         Gdx.input.setInputProcessor(coronaList);
     }
 
@@ -78,13 +79,19 @@ public class PantallaJuego implements Screen {
         balas_text.draw(batch,"vacunas: " + cant_balas.get(0),20,30);
         tiempo_restante_text.draw(batch,"Sobrevive: " + tiempo_restante,270,30);
         batch.end();
+
+        if(tiempo_restante<=0){
+            coronaList.coronaList.clear();
+        }
+
         /** Contador de segundos */
         if (TimeUtils.timeSinceMillis(startTime) > 1000) {
             startTime = TimeUtils.millis();
             tiempo_restante--;
+            if(tiempo_restante%10==0)dificultad +=0.3f;
         }
 
-        coronaList.update(delta);
+        coronaList.update(delta,dificultad);
         medico.render(delta);
 
         if(!medico.isState()){ //REINICIAR

@@ -25,13 +25,13 @@ public class Corona extends InputAdapter {
         this.viewport = viewport;
         img = new Texture("coronanuevo.png");
         posision = position;
-        setRectangle(new Rectangle(posision.x, posision.y, img.getWidth(), img.getHeight()));
+        setRectangle(new Rectangle(posision.x, posision.y, img.getWidth()-20, img.getHeight()-20));
         batch = new SpriteBatch();
         renderer = new ShapeRenderer();
         velocity = new Vector2();
     }
 
-    public void render(float delta) {
+    public void render(float delta,float velocidad) {
         //handleInput(delta);
         batch.setProjectionMatrix(viewport.getCamera().combined);
         renderer.setProjectionMatrix(viewport.getCamera().combined);
@@ -40,9 +40,9 @@ public class Corona extends InputAdapter {
         renderer.rect(getRectangle().x, getRectangle().y, getRectangle().width, getRectangle().height);
         renderer.end();
         batch.begin();
-        batch.draw(img,posision.x,posision.y);
+        batch.draw(img,posision.x-10,posision.y-10);
         batch.end();
-        velocity.mulAdd(new Vector2(0,-50.0f), delta);
+        velocity.mulAdd(new Vector2(0,-velocidad), delta);
         posision.mulAdd(velocity, delta);
         getRectangle().setPosition(posision);
     }
