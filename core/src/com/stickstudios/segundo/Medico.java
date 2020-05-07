@@ -13,6 +13,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 public class Medico {
 
     Texture img;
+    Texture img2;
     private boolean state;
     private Rectangle rectangle;
     Vector2 posision;

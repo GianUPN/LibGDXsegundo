@@ -1,6 +1,8 @@
 package com.stickstudios.segundo;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -59,6 +61,7 @@ public class CoronaList extends InputAdapter {
         Vector2 worldClick = viewport.unproject(new Vector2(screenX, screenY));
         for (int i = 0; i < coronaList.size && cant_balas.get(0)>0; i++) {
             if(coronaList.get(i).getRectangle().contains(worldClick.x,worldClick.y)){
+                coronaList.get(i).playSound();
                 coronaList.removeIndex(i);
                 //System.out.println("murio");
                 cant_balas.set(0,cant_balas.get(0)-1);

@@ -3,6 +3,7 @@ package com.stickstudios.segundo;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -33,6 +34,7 @@ public class PantallaJuego implements Screen {
     long startTime = 0;
     int tiempo_restante;
     float dificultad;
+    Music music;
 
     public PantallaJuego(Game game){
         this.game = game;
@@ -57,6 +59,10 @@ public class PantallaJuego implements Screen {
         medico = new Medico(viewport);
         coronaList = new CoronaList(viewport,cant_balas,medico);
         fondo = new Texture("fondo.PNG");
+        music = Gdx.audio.newMusic(Gdx.files.internal("music.mp3"));
+        music.setLooping(true);
+        music.setVolume(0.4f);
+        music.play();
         dificultad = 2f;
         Gdx.input.setInputProcessor(coronaList);
     }

@@ -3,6 +3,7 @@ package com.stickstudios.segundo;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -20,11 +21,13 @@ public class Corona extends InputAdapter {
     ShapeRenderer renderer;
     SpriteBatch batch;
     Viewport viewport;
+    Sound hit;
 
     public Corona(Viewport viewport, Vector2 position) {
         this.viewport = viewport;
         img = new Texture("coronanuevo.png");
         posision = position;
+        hit = Gdx.audio.newSound(Gdx.files.internal("hit.wav"));
         setRectangle(new Rectangle(posision.x, posision.y, img.getWidth()-20, img.getHeight()-20));
         batch = new SpriteBatch();
         renderer = new ShapeRenderer();
@@ -66,6 +69,10 @@ public class Corona extends InputAdapter {
         }
     }
 
+    public void playSound(){
+        hit.play(0.4f);
+    }
+
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         Vector2 worldClick = viewport.unproject(new Vector2(screenX, screenY));
@@ -84,6 +91,7 @@ public class Corona extends InputAdapter {
         img.dispose();
         batch.dispose();
         renderer.dispose();
+        hit.dispose();
     }
 
     public Rectangle getRectangle() {
