@@ -101,6 +101,7 @@ public class PantallaJuego implements Screen {
         medico.render(delta);
 
         if(!medico.isState()){ //REINICIAR
+            music.stop();
             game.setScreen(new PantallaJuego(game));
         }
     }
@@ -131,5 +132,6 @@ public class PantallaJuego implements Screen {
         balas_text.dispose();
         renderer.dispose();
         medico.dispose();
+        music.dispose();
     }
 }
